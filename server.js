@@ -27,7 +27,7 @@ app.get("/api/hello", function (req, res) {
 });
 
 
-// api main endpoint 
+// API main endpoint 
 app.get('/api/', function (req, res) {
   
   let unixDate = new Date().getTime();
@@ -39,10 +39,11 @@ app.get('/api/', function (req, res) {
     res.json(dateApiObject);
 });
 
-// api main endpoint 
+// API endpoint for date parameters
 app.get('/api/:dateInput', function (req, res) {
   let dateInput = req.params.dateInput;
  
+  // Object Of Date API
   let dateApiObject = {
     unix: "",
     utc: ""
@@ -51,6 +52,7 @@ app.get('/api/:dateInput', function (req, res) {
 
   // if date input contains "-" then
   if (dateInput.includes('-')) {
+    console.log(req.params.dateInput);
     dateApiObject.unix = new Date(dateInput).getTime();
     dateApiObject.utc = new Date(dateInput).toGMTString();
   }
@@ -61,9 +63,12 @@ app.get('/api/:dateInput', function (req, res) {
       dateApiObject.unix = 'Invalid Date';
       dateApiObject.utc = 'Invalid Date';
       }
+    
      // if date input contains numeric characters only
       else {
-        dateInput = parseInt(dateInput);
+
+      console.log(req.params.dateInput);
+      dateInput = parseInt(dateInput);
       dateApiObject.unix = new Date(dateInput).getTime();
       dateApiObject.utc = new Date(dateInput).toUTCString();
     }
@@ -75,6 +80,7 @@ app.get('/api/:dateInput', function (req, res) {
   
   // if the dates are valid 
   else {
+    console.log(dateApiObject);
     res.json(dateApiObject);
   }
 });
