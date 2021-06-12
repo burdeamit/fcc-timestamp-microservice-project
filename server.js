@@ -51,19 +51,25 @@ app.get('/api/:dateInput', function (req, res) {
 
   // if date input contains "-" then
   if (dateInput.includes('-')) {
-     let date_string = new Date(dateInput);
-    dateApiObject.unix = date_string.getTime() / 1000;
+    let date_string = new Date(dateInput);
+    dateApiObject.unix = parseInt(date_string.getTime());
     dateApiObject.utc = date_string.toGMTString();
   }
-  // if date input is a number 
+  // if date input does not contains "-"
   else {
-   let date_string = new Date(dateInput*1000);
-    dateApiObject.unix = dateInput;
-    dateApiObject.utc = date_string.toGMTString();
-
+      // if date input contains non numeric characters 
+      if (dateInput.match(/[^0-9]/g)) {
+      dateApiObject.unix = 'Invalid Date';
+      dateApiObject.utc = 'Invalid Date';
+      }
+     // if date input contains numeric characters only
+      else {
+      let date_string = new Date(parseInt(dateInput));
+      dateApiObject.unix = date_string.getTime();
+      dateApiObject.utc = date_string.toUTCString();
+    }
   }
-
-  // if the dates are invalid 
+  // if the dates are invalid show error
   if (dateApiObject.unix === 'Invalid Date' || dateApiObject.utc === 'Invalid Date') {
     res.json({ error: "Invalid Date" });
   }
