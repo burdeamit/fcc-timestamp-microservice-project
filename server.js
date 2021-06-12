@@ -4,6 +4,8 @@
 // init project
 var express = require('express');
 var app = express();
+require('dotenv').config()
+
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -26,32 +28,51 @@ app.get("/api/hello", function (req, res) {
 
 
 // api main endpoint 
-app.get("/api/", function (req, res) {
-  let currentDate = new Date();
-  let unixDate = Date.parse(currentDate);
-  let utcDate = currentDate.toUTCString();
-  let date_string = {
+app.get('/api/', function (req, res) {
+  let date_string = new Date();
+  let unixDate = date_string.getTime();
+  let utcDate = date_string.toUTCString();
+  let dateApiObject = {
     unix: unixDate,
     utc: utcDate
   }
-  res.json(date_string);
+    res.json(dateApiObject);
 });
 
-// Api Error Endpoint
-app.get("/api/*", function (req, res) {
-  let error_api = { error : "Invalid Date" }
-  res.json(error_api);
+// api main endpoint 
+app.get('/api/:dateInput', function (req, res) {
+  let dateInput = req.params.dateInput;
+ 
+  let dateApiObject = {
+    unix: "",
+    utc: ""
+  }
+ 
+
+  // if date input contains "-" then
+  if (dateInput.includes('-')) {
+     let date_string = new Date(dateInput);
+    dateApiObject.unix = date_string.getTime() / 1000;
+    dateApiObject.utc = date_string.toGMTString();
+  }
+  // if date input is a number 
+  else {
+   let date_string = new Date(dateInput*1000);
+    dateApiObject.unix = dateInput;
+    dateApiObject.utc = date_string.toGMTString();
+
+  }
+
+  // if the dates are invalid 
+  if (dateApiObject.unix === 'Invalid Date' || dateApiObject.utc === 'Invalid Date') {
+    res.json({ error: "Invalid Date" });
+  }
+  
+  // if the dates are valid 
+  else {
+    res.json(dateApiObject);
+  }
 });
-
-
-
-// Api Error Endpoint
-app.get("/api/*", function (req, res) {
-  let error_api = { error : "Invalid Date" }
-  res.json(error_api);
-});
-
-
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT || 3000, function () {
