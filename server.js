@@ -53,8 +53,11 @@ app.get('/api/:dateInput', function (req, res) {
   // if date input contains "-" then
   if (dateInput.includes('-')) {
     console.log(req.params.dateInput);
-    dateApiObject.unix = new Date(dateInput).getTime();
-    dateApiObject.utc = new Date(dateInput).toGMTString();
+    // dateApiObject.unix = new Date(dateInput).getTime();
+    // dateApiObject.utc = new Date(dateInput).toGMTString();
+    let date_string = new Date(dateInput);
+    dateApiObject.unix = Date.parse(date_string);
+    dateApiObject.utc = date_string.toGMTString();
   }
   // if date input does not contains "-"
   else {
