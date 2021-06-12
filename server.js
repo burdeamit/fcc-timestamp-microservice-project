@@ -29,9 +29,9 @@ app.get("/api/hello", function (req, res) {
 
 // api main endpoint 
 app.get('/api/', function (req, res) {
-  let date_string = new Date();
-  let unixDate = date_string.getTime();
-  let utcDate = date_string.toUTCString();
+  
+  let unixDate = new Date().getTime();
+  let utcDate = new Date().toUTCString();
   let dateApiObject = {
     unix: unixDate,
     utc: utcDate
@@ -51,9 +51,8 @@ app.get('/api/:dateInput', function (req, res) {
 
   // if date input contains "-" then
   if (dateInput.includes('-')) {
-    let date_string = new Date(dateInput);
-    dateApiObject.unix = parseInt(date_string.getTime());
-    dateApiObject.utc = date_string.toGMTString();
+    dateApiObject.unix = new Date(dateInput).getTime();
+    dateApiObject.utc = new Date(dateInput).toGMTString();
   }
   // if date input does not contains "-"
   else {
@@ -64,9 +63,9 @@ app.get('/api/:dateInput', function (req, res) {
       }
      // if date input contains numeric characters only
       else {
-      let date_string = new Date(parseInt(dateInput));
-      dateApiObject.unix = date_string.getTime();
-      dateApiObject.utc = date_string.toUTCString();
+        dateInput = parseInt(dateInput);
+      dateApiObject.unix = new Date(dateInput).getTime();
+      dateApiObject.utc = new Date(dateInput).toUTCString();
     }
   }
   // if the dates are invalid show error
