@@ -34,48 +34,21 @@ app.get("/api/", function (req, res) {
 });
 
 // API endpoint for date parameters
-app.get("/api/:dateInput", function (req, res) {
-  let dateInput = req.params.dateInput;
-
-  // Object Of Date API
-  let dateApiObject = {
-    unix: "",
-    utc: "",
-  };
-
-  // if date input contains "-" then
-  if (dateInput.includes("-")) {
-    dateApiObject.unix = new Date(dateInput).getTime();
-    dateApiObject.utc = new Date(dateInput).toUTCString();
-  }
-  // if date input does not contains "-"
-  else {
-    // if date input contains non numeric characters
-    if (dateInput.match(/[^0-9]/g)) {
-      dateApiObject.unix = "Invalid Date";
-      dateApiObject.utc = "Invalid Date";
-    }
-
-    // if date input contains numeric characters only
-    else {
-      console.log(req.params.dateInput);
-      dateInput = parseInt(dateInput);
-      dateApiObject.unix = new Date(dateInput).getTime();
-      dateApiObject.utc = new Date(dateInput).toUTCString();
-    }
-  }
-  // if the dates are invalid show error
-  if (
-    dateApiObject.unix === "Invalid Date" ||
-    dateApiObject.utc === "Invalid Date"
-  ) {
-    res.json({ error: "Invalid Date" });
-  }
-
-  // if the dates are valid
-  else {
-    console.log(dateApiObject);
-    res.json(dateApiObject);
+app.get("/api/:date", function (req, res) {
+  let date_string = req.params.date;
+  if (new Date(date_string) == "Invalid Date" && isNaN(date_string)) {
+    res.json({ error: "invalid date" });
+  } else if (isNaN(date_string)) {
+    res.json({
+      unix: new Date(date_string).getTime(),
+      utc: new Date(date_string).toUTCString(),
+    });
+  } else {
+    date_string = parseInt(date_string);
+    res.json({
+      unix: new Date(date_string).getTime(),
+      utc: new Date(date_string).toUTCString(),
+    });
   }
 });
 
